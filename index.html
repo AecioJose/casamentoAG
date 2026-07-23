@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Músicas do Casamento - Player Interativo</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        wedding: {
+                            gold: '#D4AF37',
+                            lightGold: '#F3E5AB',
+                            rose: '#E8C5C8',
+                            darkBg: '#0F0E13',
+                            cardBg: '#181620',
+                            cardBorder: '#2E2B3D'
+                        }
+                    },
+                    fontFamily: {
+                        cinzel: ['Cinzel', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: radial-gradient(circle at top center, #1c182a 0%, #0c0a12 100%);
+            min-height: 100vh;
+        }
+
+        .card-glow {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-glow:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(212, 175, 55, 0.25);
+        }
+
+        .card-playing {
+            border-color: #D4AF37 !important;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(24, 22, 32, 0.9) 100%);
+        }
+
+        /* Equalizer Animation */
+        .eq-bar {
+            animation: bounce 1.2s ease-in-out infinite alternate;
+        }
+        .eq-bar:nth-child(2) { animation-delay: 0.2s; }
+        .eq-bar:nth-child(3) { animation-delay: 0.4s; }
+        .eq-bar:nth-child(4) { animation-delay: 0.1s; }
+
+        @keyframes bounce {
+            0% { height: 4px; }
+            100% { height: 20px; }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0c0a12;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2E2B3D;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #D4AF37;
+        }
+    </style>
+</head>
+<body class="text-slate-100 font-sans p-4 md:p-8 min-h-screen flex flex-col justify-between selection:bg-wedding-gold selection:text-black">
+
+    <div class="max-w-7xl mx-auto w-full">
+        <!-- Header -->
+        <header class="text-center my-6 md:my-10 relative">
+            <div class="inline-block border-b-2 border-wedding-gold/40 pb-2 px-6">
+                <span class="text-wedding-gold text-sm tracking-[0.3em] uppercase font-semibold">Trilhas Sonoras casamento</span>
+                <h1 class="text-3xl md:text-5xl font-cinzel font-bold text-transparent bg-clip-text bg-gradient-to-r from-wedding-lightGold via-wedding-gold to-yellow-200 mt-1">
+                    Ana & Gabriel
+                </h1>
+            </div>
+            <!-- <p class="text-slate-400 text-sm md:text-base mt-3 max-w-lg mx-auto">
+                Clique nos cards para reproduzir. Use as teclas atalhos para controlar o áudio facilmente durante o evento.
+            </p> -->
+
+            <!-- Shortcuts Bar -->
+            <div class="flex flex-wrap justify-center gap-3 mt-6 text-xs md:text-sm">
+                <div class="bg-wedding-cardBg/80 border border-wedding-cardBorder rounded-full px-4 py-1.5 flex items-center gap-2 shadow-sm backdrop-blur-sm">
+                    <kbd class="bg-slate-800 border border-slate-600 rounded px-2 py-0.5 font-mono text-wedding-gold font-bold">ESPAÇO</kbd>
+                    <span class="text-slate-300">Pausar / Continuar</span>
+                </div>
+                <div class="bg-wedding-cardBg/80 border border-wedding-cardBorder rounded-full px-4 py-1.5 flex items-center gap-2 shadow-sm backdrop-blur-sm">
+                    <kbd class="bg-slate-800 border border-slate-600 rounded px-2 py-0.5 font-mono text-wedding-gold font-bold">R</kbd>
+                    <span class="text-slate-300">Resetar (Início + Pausa)</span>
+                </div>
+                <!-- <div class="bg-wedding-cardBg/80 border border-wedding-cardBorder rounded-full px-4 py-1.5 flex items-center gap-2 shadow-sm backdrop-blur-sm">
+                    <i class="fa-solid fa-shield-halved text-emerald-400"></i>
+                    <span class="text-slate-300">Proteção Anti Duplo Clique</span>
+                </div> -->
+            </div>
+        </header>
+
+        <!-- Main Cards Grid -->
+        <main class="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5 my-6 sm:my-8">
+            <!-- Cards will be dynamically generated by JS -->
+        </main>
+    </div>
+
+    <!-- Player Bar at Bottom -->
+    <footer class="sticky bottom-3 sm:bottom-4 max-w-4xl mx-auto w-full z-50 px-2 sm:px-0">
+        <div id="player-bar" class="bg-wedding-cardBg/95 backdrop-blur-md border border-wedding-gold/30 rounded-2xl p-3.5 sm:p-4 shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
+            
+            <div class="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
+                <div id="player-icon-box" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-wedding-cardBorder flex items-center justify-center text-wedding-gold text-lg sm:text-xl shrink-0">
+                    <i class="fa-solid fa-music"></i>
+                </div>
+                <div class="min-w-0 flex-1 sm:flex-initial">
+                    <div class="text-[10px] sm:text-xs text-wedding-gold uppercase tracking-wider font-semibold">Tocando agora</div>
+                    <div id="player-title" class="font-bold text-sm sm:text-base text-slate-100 truncate max-w-[200px] sm:max-w-[250px]">
+                        Nenhum card selecionado
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress & Controls -->
+            <div class="flex items-center gap-3 sm:gap-4 w-full sm:w-auto justify-between sm:justify-end">
+                <!-- Visual Time display -->
+                <div class="text-xs font-mono text-slate-400">
+                    <span id="current-time">00:00</span> / <span id="total-time">00:00</span>
+                </div>
+
+                <!-- Controls -->
+                <div class="flex items-center gap-2">
+                    <button id="btn-reset" title="Resetar áudio (Atalho: R)" class="p-2.5 sm:p-3 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 transition border border-slate-700 active:scale-95 text-sm sm:text-base">
+                        <i class="fa-solid fa-rotate-left"></i>
+                    </button>
+                    <button id="btn-play-pause" title="Pausar/Continuar (Atalho: Espaço)" class="p-2.5 px-4 sm:p-3 sm:px-5 rounded-xl bg-wedding-gold hover:bg-yellow-500 text-black font-bold transition shadow-lg active:scale-95 flex items-center gap-2 text-sm sm:text-base">
+                        <i id="play-pause-icon" class="fa-solid fa-play"></i>
+                        <span id="play-pause-text" class="text-xs uppercase font-bold hidden sm:inline">Play</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Hidden audio element -->
+    <audio id="global-audio" class="hidden" preload="auto"></audio>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed top-4 right-4 left-4 sm:left-auto max-w-sm bg-wedding-cardBg border border-wedding-gold/50 text-slate-100 px-4 py-3 rounded-xl shadow-xl transform translate-x-full transition-transform duration-300 z-50 flex items-center gap-3">
+        <i class="fa-solid fa-circle-info text-wedding-gold text-lg"></i>
+        <span id="toast-message" class="text-xs sm:text-sm">Mensagem de alerta</span>
+    </div>
+
+    <script>
+        const CARDS_DATA = [
+            { id: 'aliancas', title: 'Alianças', subtitle: 'Entrada das alianças', iconType: 'fa', icon: 'fa-solid fa-ring', file: 'ALIANÇAS - É por Você Que Canto _ Violino Instrumental.mp3' },
+            { id: 'avos', title: 'Avós', subtitle: 'Entrada especial dos avós', iconType: 'fa', icon: 'fa-solid fa-hands-holding-child', file: 'AVÓS -- Thiago Brado - Utopia.mp3' },
+            { id: 'daminha', title: 'Daminha', subtitle: 'Momentos fofos e floridos', iconType: 'fa', icon: 'fa-solid fa-wand-magic-sparkles', file: 'DAMINHA -- Beauty and the Beast Orchestra Version.mp3' },
+            { 
+                id: 'noiva', 
+                title: 'Noiva', 
+                subtitle: 'Marcha nupcial e entrada principal', 
+                iconType: 'svg', 
+                svg: `<svg class="w-7 h-7 fill-current" viewBox="0 0 24 24"><path d="M12 2a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zm4 6h-8c-.55 0-1 .45-1 1 0 1.35.75 2.5 1.8 3.1L7 21h10l-1.8-8.9c1.05-.6 1.8-1.75 1.8-3.1 0-.55-.45-1-1-1zm-4 2.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5z"/></svg>`,
+                file: 'ENTRADA DA NOIVA -- Marcha Nupcial + Eu Juro.mp3' 
+            },
+            { id: 'noivo', title: 'Noivo', subtitle: 'Entrada do noivo', iconType: 'fa', icon: 'fa-solid fa-user-tie', file: 'ENTRADA NOIVO -- Sorriso Resplandecente (Violin Cover).mp3' },
+            { id: 'florista', title: 'Florista', subtitle: 'Pétalas e caminho florido', iconType: 'fa', icon: 'fa-solid fa-spa', file: 'FLORISTAS -- Aquarela - Toquinho.mp3' },
+            { id: 'irma', title: 'Irmã', subtitle: 'Homenagem ou participação', iconType: 'fa', icon: 'fa-solid fa-heart-pulse', file: 'HOMENAGEM IRMA -- tudo que a fé pode tocar.mp3' },
+            { 
+                id: 'beijo', 
+                title: 'Beijo', 
+                subtitle: 'Momento do SIM e beijo final', 
+                iconType: 'svg', 
+                svg: `<svg class="w-7 h-7 fill-current" viewBox="0 0 24 24"><path d="M20.83 8.35c-1.25-.85-2.78-1.2-4.29-.98-1.55.22-3.02.93-4.54 1.63-1.52-.7-2.99-1.41-4.54-1.63-1.51-.22-3.04.13-4.29.98-1.36.93-2.1 2.49-1.87 4.1.33 2.34 2.22 4.22 4.54 4.88 1.94.55 4.02.32 6.16-.62 2.14.94 4.22 1.17 6.16.62 2.32-.66 4.21-2.54 4.54-4.88.23-1.61-.51-3.17-1.87-4.1zM12 11.5c1.4 0 2.73.29 3.97.82-1.24.81-2.61 1.18-3.97 1.18s-2.73-.37-3.97-1.18c1.24-.53 2.57-.82 3.97-.82z"/></svg>`,
+                file: 'HORA DO BEIJO -- No Céu dos Braços -  Teus Di Paullo & Paulino.mp3' 
+            },
+            { id: 'madrinhas_padrinhos', title: 'Madrinhas e Padrinhos', subtitle: 'Entrada dos padrinhos', iconType: 'fa', icon: 'fa-solid fa-people-group', file: 'MADRINHAS E PADRINHOS -- Só o Começo - Vocal Livre.mp3' },
+            { id: 'jesus', title: 'Jesus', subtitle: 'Momento de louvor e bênção', iconType: 'fa', icon: 'fa-solid fa-cross', file: 'MARCIO FILHO - PLACA JESUS CONVIDADO DE HONRA -- A Casa É Sua - Casa Worship.mp3' },
+            { id: 'pastores', title: 'Pastores', subtitle: 'Palavra, bênção e oração', iconType: 'fa', icon: 'fa-solid fa-book-bible', file: 'PASTORES -- Eu vou - Josué dos Anjos.mp3' }
+        ];
+
+        // State variables
+        let activeCardId = null;
+        let isPlaying = false;
+        let lastClickTime = 0;
+        const DOUBLE_CLICK_DEBOUNCE_MS = 400; // Anti double-click threshold
+
+        // DOM elements
+        const audioEl = document.getElementById('global-audio');
+        const mainGrid = document.querySelector('main');
+        
+        const playerTitle = document.getElementById('player-title');
+        const playerIconBox = document.getElementById('player-icon-box');
+        const btnPlayPause = document.getElementById('btn-play-pause');
+        const playPauseIcon = document.getElementById('play-pause-icon');
+        const playPauseText = document.getElementById('play-pause-text');
+        const btnReset = document.getElementById('btn-reset');
+        const currentTimeEl = document.getElementById('current-time');
+        const totalTimeEl = document.getElementById('total-time');
+
+        function generateSynthesizedWeddingTone(index) {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const sampleRate = audioCtx.sampleRate;
+            const duration = 15;
+            const numSamples = sampleRate * duration;
+            const buffer = audioCtx.createBuffer(1, numSamples, sampleRate);
+            const data = buffer.getChannelData(0);
+
+            const baseFreqs = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25];
+            const rootFreq = baseFreqs[index % baseFreqs.length];
+
+            for (let i = 0; i < numSamples; i++) {
+                const t = i / sampleRate;
+                const env = Math.exp(-((t % 2) * 1.5)) * 0.4;
+                const wave1 = Math.sin(2 * Math.PI * rootFreq * t);
+                const wave2 = Math.sin(2 * Math.PI * (rootFreq * 1.5) * t) * 0.5;
+                data[i] = (wave1 + wave2) * env * 0.25;
+            }
+
+            const numOfChan = 1;
+            const length = numSamples * 2 + 44;
+            const abuffer = new ArrayBuffer(length);
+            const view = new DataView(abuffer);
+            let pos = 0;
+
+            function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
+            function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
+
+            setUint32(0x46464952); setUint32(length - 8); setUint32(0x45564157);
+            setUint32(0x20746d66); setUint32(16); setUint16(1); setUint16(1);
+            setUint32(sampleRate); setUint32(sampleRate * 2); setUint16(2); setUint16(16);
+            setUint32(0x61746164); setUint32(length - pos - 4);
+
+            const chanData = buffer.getChannelData(0);
+            for (let i = 0; i < numSamples; i++) {
+                let sample = Math.max(-1, Math.min(1, chanData[i]));
+                sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767) | 0;
+                view.setInt16(pos, sample, true);
+                pos += 2;
+            }
+
+            return URL.createObjectURL(new Blob([abuffer], { type: "audio/wav" }));
+        }
+
+        function renderCards() {
+            mainGrid.innerHTML = '';
+            
+            CARDS_DATA.forEach((card, index) => {
+                const cardEl = document.createElement('div');
+                cardEl.id = `card-${card.id}`;
+                cardEl.className = `card-glow bg-wedding-cardBg border border-wedding-cardBorder rounded-2xl p-4 sm:p-5 cursor-pointer relative flex flex-col justify-between select-none group transition-all active:scale-[0.98]`;
+                
+                const iconHtml = card.iconType === 'svg' 
+                    ? card.svg 
+                    : `<i class="${card.icon}"></i>`;
+
+                cardEl.innerHTML = `
+                    <div>
+                        <!-- Top Header in Card -->
+                        <div class="flex items-center justify-between mb-3 sm:mb-4">
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-wedding-cardBorder/60 border border-wedding-gold/20 flex items-center justify-center text-wedding-gold text-xl sm:text-2xl group-hover:scale-110 transition-transform shrink-0">
+                                ${iconHtml}
+                            </div>
+
+                            <!-- Equalizer Visualizer (Hidden when idle) -->
+                            <div class="eq-container flex items-end gap-1 h-5 hidden" id="eq-${card.id}">
+                                <div class="eq-bar w-1 bg-wedding-gold rounded-full"></div>
+                                <div class="eq-bar w-1 bg-wedding-gold rounded-full"></div>
+                                <div class="eq-bar w-1 bg-wedding-gold rounded-full"></div>
+                                <div class="eq-bar w-1 bg-wedding-gold rounded-full"></div>
+                            </div>
+                        </div>
+
+                        <!-- Card Title & Description -->
+                        <h3 class="font-cinzel text-base sm:text-lg font-bold text-slate-100 group-hover:text-wedding-gold transition-colors">${card.title}</h3>
+                        <p class="text-xs text-slate-400 mt-1 line-clamp-2">${card.subtitle}</p>
+                    </div>
+
+                    <!-- Audio Progress Bar inside card -->
+                    <div class="mt-4 sm:mt-6">
+                        <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                            <div id="progress-${card.id}" class="bg-wedding-gold h-full w-0 transition-all duration-100"></div>
+                        </div>
+                        <div class="flex justify-between items-center mt-2 text-[10px] text-slate-400">
+                            <span id="badge-${card.id}" class="uppercase tracking-wider font-semibold text-slate-500">Pronto</span>
+                            <i class="fa-solid fa-play text-slate-500 group-hover:text-wedding-gold transition" id="play-icon-${card.id}"></i>
+                        </div>
+                    </div>
+                `;
+
+                // Add Card Click Handler (With Anti Double-Click)
+                cardEl.addEventListener('click', () => handleCardClick(card.id, index));
+
+                mainGrid.appendChild(cardEl);
+            });
+        }
+
+        function handleCardClick(cardId, index) {
+            const now = Date.now();
+            
+            // ANTI DOUBLE-CLICK PROTECTION
+            if (now - lastClickTime < DOUBLE_CLICK_DEBOUNCE_MS) {
+                console.warn('Clique duplo ignorado para prevenção de travamento.');
+                showToast('Clique rápido ignorado (proteção ativa)');
+                return;
+            }
+            lastClickTime = now;
+
+            // If clicking the same active card, toggle play/pause
+            if (activeCardId === cardId) {
+                togglePlayPause();
+                return;
+            }
+
+            // Otherwise, play the new card audio from start
+            playCardAudio(cardId, index);
+        }
+
+        function playCardAudio(cardId, index) {
+            activeCardId = cardId;
+            const cardObj = CARDS_DATA.find(c => c.id === cardId);
+            
+            // Use local file from root folder (e.g., ./aliancas.mp3)
+            audioEl.src = `./${cardObj.file}`;
+            audioEl.currentTime = 0;
+            
+            const attemptPlay = () => {
+                audioEl.play().then(() => {
+                    isPlaying = true;
+                    updateUIState();
+                    showToast(`Tocando: ${cardObj.title}`);
+                }).catch(err => {
+                    console.warn(`Arquivo local ./${cardObj.file} não encontrado. Usando tom sintetizado demonstrativo.`, err);
+                    // Fallback to generated tone if local mp3 isn't available
+                    audioEl.src = generateSynthesizedWeddingTone(index);
+                    audioEl.play().then(() => {
+                        isPlaying = true;
+                        updateUIState();
+                        showToast(`Tocando: ${cardObj.title}`);
+                    });
+                });
+            };
+
+            attemptPlay();
+        }
+
+        function togglePlayPause() {
+            if (!activeCardId) {
+                playCardAudio(CARDS_DATA[0].id, 0);
+                return;
+            }
+
+            if (isPlaying) {
+                audioEl.pause();
+                isPlaying = false;
+                showToast('Áudio Pausado (Espaço)');
+            } else {
+                audioEl.play().then(() => {
+                    isPlaying = true;
+                    showToast('Áudio Retomado (Espaço)');
+                }).catch(err => console.error(err));
+            }
+
+            updateUIState();
+        }
+
+        function resetAudio() {
+            if (!activeCardId) return;
+
+            audioEl.currentTime = 0;
+            audioEl.pause();
+            isPlaying = false;
+            
+            updateUIState();
+            showToast('Áudio resetado para o início (R)');
+        }
+
+        function updateUIState() {
+            CARDS_DATA.forEach(card => {
+                const cardEl = document.getElementById(`card-${card.id}`);
+                const eqEl = document.getElementById(`eq-${card.id}`);
+                const badgeEl = document.getElementById(`badge-${card.id}`);
+                const playIcon = document.getElementById(`play-icon-${card.id}`);
+
+                if (card.id === activeCardId) {
+                    if (isPlaying) {
+                        cardEl.classList.add('card-playing');
+                        eqEl.classList.remove('hidden');
+                        badgeEl.textContent = 'Tocando';
+                        badgeEl.className = 'uppercase tracking-wider font-semibold text-wedding-gold';
+                        playIcon.className = 'fa-solid fa-pause text-wedding-gold';
+                    } else {
+                        cardEl.classList.remove('card-playing');
+                        eqEl.classList.add('hidden');
+                        badgeEl.textContent = 'Pausado';
+                        badgeEl.className = 'uppercase tracking-wider font-semibold text-yellow-400';
+                        playIcon.className = 'fa-solid fa-play text-yellow-400';
+                    }
+                } else {
+                    cardEl.classList.remove('card-playing');
+                    eqEl.classList.add('hidden');
+                    badgeEl.textContent = 'Pronto';
+                    badgeEl.className = 'uppercase tracking-wider font-semibold text-slate-500';
+                    playIcon.className = 'fa-solid fa-play text-slate-500';
+                }
+            });
+
+            // Update Bottom Player Bar
+            if (activeCardId) {
+                const activeData = CARDS_DATA.find(c => c.id === activeCardId);
+                playerTitle.textContent = activeData.title;
+                const iconHtml = activeData.iconType === 'svg' 
+                    ? activeData.svg 
+                    : `<i class="${activeData.icon}"></i>`;
+                playerIconBox.innerHTML = iconHtml;
+            }
+
+            // Update Bottom Play/Pause button
+            if (isPlaying) {
+                playPauseIcon.className = 'fa-solid fa-pause';
+                playPauseText.textContent = 'Pausar';
+                btnPlayPause.classList.replace('bg-wedding-gold', 'bg-yellow-400');
+            } else {
+                playPauseIcon.className = 'fa-solid fa-play';
+                playPauseText.textContent = 'Play';
+                btnPlayPause.classList.replace('bg-yellow-400', 'bg-wedding-gold');
+            }
+        }
+
+        // Keyboard Shortcuts Handler
+        window.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+            // SPACEBAR -> Play / Pause
+            if (e.code === 'Space') {
+                e.preventDefault();
+                togglePlayPause();
+            }
+
+            // R KEY -> Reset
+            if (e.code === 'KeyR') {
+                e.preventDefault();
+                resetAudio();
+            }
+        });
+
+        // Audio Time Updates
+        audioEl.addEventListener('timeupdate', () => {
+            if (!activeCardId || !audioEl.duration) return;
+
+            const progressPct = (audioEl.currentTime / audioEl.duration) * 100;
+            const progressEl = document.getElementById(`progress-${activeCardId}`);
+            if (progressEl) progressEl.style.width = `${progressPct}%`;
+
+            currentTimeEl.textContent = formatTime(audioEl.currentTime);
+            totalTimeEl.textContent = formatTime(audioEl.duration);
+        });
+
+        audioEl.addEventListener('ended', () => {
+            isPlaying = false;
+            updateUIState();
+            showToast('Música finalizada');
+        });
+
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return "00:00";
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        let toastTimeout;
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            toastMsg.textContent = message;
+
+            toast.classList.remove('translate-x-full');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('translate-x-full');
+            }, 2500);
+        }
+
+        btnPlayPause.addEventListener('click', togglePlayPause);
+        btnReset.addEventListener('click', resetAudio);
+
+        window.onload = () => {
+            renderCards();
+        };
+    </script>
+</body>
+</html>
