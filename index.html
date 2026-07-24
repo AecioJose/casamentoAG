@@ -172,31 +172,35 @@
 
     <script>
         const CARDS_DATA = [
-            { id: 'aliancas', title: 'Alianças', subtitle: 'Entrada das alianças', iconType: 'fa', icon: 'fa-solid fa-ring', file: 'ALIANÇAS - É por Você Que Canto _ Violino Instrumental.mp3' },
-            { id: 'avos', title: 'Avós', subtitle: 'Entrada especial dos avós', iconType: 'fa', icon: 'fa-solid fa-hands-holding-child', file: 'AVÓS -- Thiago Brado - Utopia.mp3' },
-            { id: 'daminha', title: 'Daminha', subtitle: 'Momentos fofos e floridos', iconType: 'fa', icon: 'fa-solid fa-wand-magic-sparkles', file: 'DAMINHA -- Beauty and the Beast Orchestra Version.mp3' },
+            { id: 'pastores', title: '1 - Pastores', subtitle: 'Palavra, bênção e oração', iconType: 'fa', icon: 'fa-solid fa-book-bible', file: 'PASTORES -- Eu vou - Josué dos Anjos.mp3' },
+            { id: 'noivo', title: '2 - Noivo', subtitle: 'Entrada do noivo', iconType: 'fa', icon: 'fa-solid fa-user-tie', file: 'ENTRADA NOIVO -- Sorriso Resplandecente (Violin Cover).mp3' },
+            { id: 'avos', title: '3 - Avós', subtitle: 'Entrada especial dos avós', iconType: 'fa', icon: 'fa-solid fa-hands-holding-child', file: 'AVÓS -- Thiago Brado - Utopia.mp3' },
+            { id: 'jesus', title: '4 - Jesus', subtitle: 'Momento de louvor e bênção', iconType: 'fa', icon: 'fa-solid fa-cross', file: 'MARCIO FILHO - PLACA JESUS CONVIDADO DE HONRA -- A Casa É Sua - Casa Worship.mp3' },
+            { id: 'elaine', title: '5 - Lucimar e Elaine', subtitle: 'Entrada Lucimar e Elaine', iconType: 'fa', icon: 'fa-solid fa-children', file: 'Elaine -- Tocando em Frente - Instrumental Violino.mp3' },
+            { id: 'madrinhas_padrinhos', title: '6 - Madrinhas e Padrinhos', subtitle: 'Entrada dos padrinhos', iconType: 'fa', icon: 'fa-solid fa-people-group', file: 'MADRINHAS E PADRINHOS -- Só o Começo - Vocal Livre.mp3' },
+            { id: 'florista', title: '7 - Florista', subtitle: 'Pétalas e caminho florido', iconType: 'fa', icon: 'fa-solid fa-spa', file: 'FLORISTAS -- Aquarela - Toquinho.mp3' },
+            { id: 'daminha', title: '8 - Daminha', subtitle: 'Momentos fofos e floridos', iconType: 'fa', icon: 'fa-solid fa-wand-magic-sparkles', file: 'DAMINHA -- Beauty and the Beast Orchestra Version.mp3' },
+            
+            
+            
             { 
                 id: 'noiva', 
-                title: 'Noiva', 
+                title: '9 - Noiva', 
                 subtitle: 'Marcha nupcial e entrada principal', 
                 iconType: 'svg', 
                 svg: `<svg class="w-7 h-7 fill-current" viewBox="0 0 24 24"><path d="M12 2a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zm4 6h-8c-.55 0-1 .45-1 1 0 1.35.75 2.5 1.8 3.1L7 21h10l-1.8-8.9c1.05-.6 1.8-1.75 1.8-3.1 0-.55-.45-1-1-1zm-4 2.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5z"/></svg>`,
                 file: 'ENTRADA DA NOIVA -- Marcha Nupcial Eu Juro.mp3' 
             },
-            { id: 'noivo', title: 'Noivo', subtitle: 'Entrada do noivo', iconType: 'fa', icon: 'fa-solid fa-user-tie', file: 'ENTRADA NOIVO -- Sorriso Resplandecente (Violin Cover).mp3' },
-            { id: 'florista', title: 'Florista', subtitle: 'Pétalas e caminho florido', iconType: 'fa', icon: 'fa-solid fa-spa', file: 'FLORISTAS -- Aquarela - Toquinho.mp3' },
-            { id: 'irma', title: 'Irmã', subtitle: 'Homenagem ou participação', iconType: 'fa', icon: 'fa-solid fa-heart-pulse', file: 'HOMENAGEM IRMA -- tudo que a fé pode tocar.mp3' },
+            { id: 'irma', title: '10 - Irmã', subtitle: 'Homenagem ou participação', iconType: 'fa', icon: 'fa-solid fa-heart-pulse', file: 'HOMENAGEM IRMA -- tudo que a fé pode tocar.mp3' },
+            { id: 'aliancas', title: '11 - Alianças', subtitle: 'Entrada das alianças', iconType: 'fa', icon: 'fa-solid fa-ring', file: 'ALIANÇAS - É por Você Que Canto _ Violino Instrumental.mp3' },
             { 
                 id: 'beijo', 
-                title: 'Beijo', 
+                title: '12 - Beijo', 
                 subtitle: 'Momento do SIM e beijo final', 
                 iconType: 'svg', 
                 svg: `<svg class="w-7 h-7 fill-current" viewBox="0 0 24 24"><path d="M20.83 8.35c-1.25-.85-2.78-1.2-4.29-.98-1.55.22-3.02.93-4.54 1.63-1.52-.7-2.99-1.41-4.54-1.63-1.51-.22-3.04.13-4.29.98-1.36.93-2.1 2.49-1.87 4.1.33 2.34 2.22 4.22 4.54 4.88 1.94.55 4.02.32 6.16-.62 2.14.94 4.22 1.17 6.16.62 2.32-.66 4.21-2.54 4.54-4.88.23-1.61-.51-3.17-1.87-4.1zM12 11.5c1.4 0 2.73.29 3.97.82-1.24.81-2.61 1.18-3.97 1.18s-2.73-.37-3.97-1.18c1.24-.53 2.57-.82 3.97-.82z"/></svg>`,
                 file: 'HORA DO BEIJO -- No Céu dos Braços -  Teus Di Paullo & Paulino.mp3' 
-            },
-            { id: 'madrinhas_padrinhos', title: 'Madrinhas e Padrinhos', subtitle: 'Entrada dos padrinhos', iconType: 'fa', icon: 'fa-solid fa-people-group', file: 'MADRINHAS E PADRINHOS -- Só o Começo - Vocal Livre.mp3' },
-            { id: 'jesus', title: 'Jesus', subtitle: 'Momento de louvor e bênção', iconType: 'fa', icon: 'fa-solid fa-cross', file: 'MARCIO FILHO - PLACA JESUS CONVIDADO DE HONRA -- A Casa É Sua - Casa Worship.mp3' },
-            { id: 'pastores', title: 'Pastores', subtitle: 'Palavra, bênção e oração', iconType: 'fa', icon: 'fa-solid fa-book-bible', file: 'PASTORES -- Eu vou - Josué dos Anjos.mp3' }
+            }       
         ];
 
         // State variables
